@@ -1,9 +1,9 @@
 import { useEffect, useState, useRef } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCircleXmark, faSpinner, faCloudUpload, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
+import { faCircleXmark, faSpinner } from '@fortawesome/free-solid-svg-icons';
 import HeadlessTippy from '@tippyjs/react/headless';
 
-import * as searchService from '~/apiServices/searchService';
+import * as searchService from '~/services/searchService';
 import { SearchIcon } from '~/components/Icons';
 import { Wrapper as PopperWrapper } from '~/components/Popper';
 import AccountItem from '~/components/AccountItem';
@@ -41,6 +41,13 @@ function Search() {
     fetchApi();
   }, [debounced]);
 
+  const handleChange = (e) => {
+    const searchValue = e.target.value;
+    if (!searchValue.startsWith(' ')) {
+      setSearchValue(searchValue);
+    }
+  };
+
   const handleClear = () => {
     setSearchValue('');
     setSearchResult([]);
@@ -74,7 +81,7 @@ function Search() {
             ref={inputRef}
             placeholder="Search accounts and videos"
             spellCheck={false}
-            onChange={(e) => setSearchValue(e.target.value)}
+            onChange={handleChange}
             onFocus={() => setShowResult(true)}
           />
           {!!searchValue && !loading && (
@@ -84,7 +91,7 @@ function Search() {
           )}
           {loading && <FontAwesomeIcon className={cx('loading')} icon={faSpinner} />}
 
-          <button className={cx('search-btn')}>
+          <button className={cx('search-btn')} onMouseDown={(e) => e.preventDefault()}>
             <SearchIcon />
           </button>
         </div>
